@@ -4,6 +4,8 @@ import axios from "axios";
 
 import { Statistic, Container, Dropdown } from "semantic-ui-react";
 
+import CGraph from "./CGraph";
+
 // const countrylist = [{ key: "India", text: "India", value: "India" }];
 
 class App extends React.Component {
@@ -11,6 +13,7 @@ class App extends React.Component {
 		data: null,
 		wdata: null,
 		countries: [],
+		cdata: null,
 	};
 
 	getIndianData = () => {
@@ -51,6 +54,10 @@ class App extends React.Component {
 				console.log(response.data);
 				this.setState({ wdata: response.data });
 				this.fillCountries();
+
+				let cdata = this.state.wdata["US"];
+				console.log(cdata);
+				this.setState({ cdata: cdata });
 			});
 	};
 
@@ -60,7 +67,13 @@ class App extends React.Component {
 		this.getWorldData();
 	}
 
-	handleChange = (e, { value }) => console.log(value);
+	handleChange = (e, { value }) => {
+		console.log("Selected country: " + value);
+
+		let cdata = this.state.wdata[value];
+		console.log(cdata);
+		this.setState({ cdata: cdata });
+	};
 
 	render() {
 		if (!this.state.data) {
@@ -97,7 +110,9 @@ class App extends React.Component {
 					search
 					options={this.state.countries}
 					onChange={this.handleChange}
+					value={"US"}
 				/>
+				{this.state.cdata ? <CGraph data={this.state.cdata} /> : null}
 			</Container>
 		);
 	}
